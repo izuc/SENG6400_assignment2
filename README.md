@@ -40,8 +40,9 @@ Runtime formats
 -----------------------------------------------------------------------------------------
 Please note
 -----------------------------------------------------------------------------------------
-The <session_id> value is the returned 5 character combination from tdcLogin
------------------------------------------------------------------------------------------
+
+The session_id value is the returned 5 character combination from tdcLogin
+
 
 MyUserClient.java:
 
