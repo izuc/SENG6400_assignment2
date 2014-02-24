@@ -1,0 +1,154 @@
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+// Student name: Lance Baker 
+// Course: SENG6400 (Network & Distributed Computing)
+// Student number: c3128034
+// Assignment title: SENG6400 Assignment 2 
+// File name: MyTDCAdmin.jws
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+import java.util.HashMap;
+import java.util.Random;
+import java.lang.StringBuilder;
+import java.security.SecureRandom;
+
+import org.apache.axis.client.Call;
+import org.apache.axis.client.Service;
+import javax.xml.namespace.QName;
+
+import org.apache.axis.MessageContext;
+import org.apache.axis.transport.http.HTTPConstants;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
+import java.net.URL;
+
+public class MyTDCAdmin {
+	private static final String SERVER_SERVICE = "http://localhost:8080/axis/tdc/MyTDCServer.jws";
+	
+	private static final String USER_NAME = "admin";
+	private static final String USER_PASSWORD = "difference";
+	private static final String INVALID_LOGIN = "FALSE";
+	
+	private static final String METHOD_SET_LOCATION = "setLocation";
+	private static final String METHOD_GET_CALLCOUNT = "getCallCount";
+	
+	private static final int SESSIONID_LENGTH = 5;
+	private static final String CHARACTERS = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+	private static Random random = new Random();
+	
+	private static HashMap<String, HttpSession> sessions = new HashMap<String, HttpSession>();
+	
+	private static int callCount;
+	
+	public MyTDCAdmin() {
+		callCount++;  // The service has been invoked; therefore the counter is incremented.
+	}
+	
+	// The tdcLogin method accepts a username and password, which gets validated against the hardcoded values.
+	// A HttpSession is then created, and a sessionID (5 characters in length) is randomly created; which will place the 
+	// HttpSession in a hashmap with the index set as the sessionID.
+	public String tdcLogin(String user, String pwd) {
+		if (validateLogin(user, pwd)) { // Validates the user credentials.
+			HttpSession session = getSession(); // Creates a session.
+			String sessionID = createSessionID(); // Creates a sessionID.
+			sessions.put(sessionID, session); // Puts the session in the sessions hashmap with the sessionID as the index.
+			return sessionID; // Returns the sessionID.
+		}
+		return INVALID_LOGIN; // Invalid login error
+	}
+	
+	// Adds a new location to the System with the GMT offset.
+	// Returns false if the location already exists, or the sessionID is invalid.
+	// Returns true if the new location has been added.
+	public boolean addLocation(String sessionID, String location, double offset) {
+		return setLocation(sessionID, location, offset, true);
+	}
+	
+	// Updates the location offset for the specified location.
+	// Returns false if the location does not exist or if the sessionID is invalid.
+	// Returns true if the location exists and has been updated.
+	public boolean setOffset(String sessionID, String location, double offset) {
+		return setLocation(sessionID, location, offset, false);
+	}
+	
+	public int callCount(String sessionID) {
+		if (sessions.containsKey(sessionID)) { // Validates the sessionID
+			// If the sessionID is valid, then it sends a callCount request to the MyTDCServer service
+			// which returns its total number of calls. The sendRequest response is outputted to a Object,
+			// that is narrowed down to a Integer (which is due to make the sendRequest method more generic).
+			Object response = sendRequest(METHOD_GET_CALLCOUNT, new Object[] {});
+			// Returns a integer value of this services callCount, plus the callCount of the MyTDCServer service.
+			return (callCount + ((response != null) ? Integer.parseInt(response.toString()) : 0));
+		}
+		return -1;
+	}
+	
+	// The tdcLogout method receives the sessionID. 
+	// If its an active session, the session will then be invalidated and removed from memory.
+	public boolean tdcLogout(String sessionID) {
+		if (sessions.containsKey(sessionID)) { // Checks whether there's a session started with the sessionID.
+			HttpSession session = sessions.get(sessionID); // Gets the HttpSession
+			session.invalidate(); // Invalidates it, which will destroy the session.
+			sessions.remove(sessionID); // Removes the session.
+			return true; // Returns true indicating logout was successful.
+		}
+		return false; // Session doesn't exist.
+	}
+	
+	// The setLocation method is used by addLocation, and the setOffset methods.
+	// Since both requests are similar (in order to stop redundant code) a boolean value (addLocation) is received
+	// which specifies the method purpose (addLocation being true, and setOffset being false).
+	private static boolean setLocation(String sessionID, String location, double offset, boolean addLocation) {
+		if (sessions.containsKey(sessionID)) { // Checks whether there's a session started with the sessionID.
+			// Sends the request to the MyTDCServer service which invokes a the setLocation method (passing the received arguments in an Object array).
+			// The sendRequest method returns a generic Object, which is narrowed down to just a Boolean value and outputted accordingly.
+			Object response = sendRequest(METHOD_SET_LOCATION, new Object[] { new String(location), new Double(offset), new Boolean(addLocation)});
+			// Checks whether the response was not null, and if its not then it casts to boolean.
+			// Otherwise if null, it returns false.
+			return ((response != null)? (((Boolean) response).booleanValue()) : false);
+		}
+		return false;
+	}
+	
+	// Creates a unique random sessionID. 
+	private static String createSessionID() {
+		String sessionID;
+		do {
+			StringBuilder builder = new StringBuilder(SESSIONID_LENGTH); // Creates a StringBuilder for the sessionID length.
+			for( int i = 0; i < SESSIONID_LENGTH; i++ ) { // Iterates for the sessionID length.
+				// Appends a random character (based on the CHARACTERS constant).
+				builder.append(CHARACTERS.charAt(random.nextInt(CHARACTERS.length())));
+			}
+			sessionID = builder.toString();
+		} while (sessions.containsKey(sessionID)); // Iterates incase the sessionID already exists.
+		return sessionID; // Returns the unqiue sessionID.
+	}
+	
+	// Gets the current HttpSession.
+	private static HttpSession getSession() {
+		MessageContext messageContext = MessageContext.getCurrentContext();
+		return ((HttpServletRequest)messageContext.getProperty(HTTPConstants.MC_HTTP_SERVLETREQUEST)).getSession();
+	}
+	
+	// The following method is used to validate the administrators user credentials.
+	private static boolean validateLogin(String user, String password) {
+		// The following just compares the received credentials with hardcoded values.
+		// If they match, then it returns boolean true - otherwise false.
+		return (user.equals(USER_NAME) && password.equals(USER_PASSWORD));
+	}
+	
+	// The sendRequest method is used to communicate with the counterpart MyTDCServer service.
+	// The method is used by the setLocation, and callCount method - therefore it is generic.
+	// Returns a Object, and receives the method to be invoked - plus a Object array of arguments to be forwarded.
+	private static Object sendRequest(String method, Object[] args) {
+		try {
+			Service service = new Service(); // Creates a Service Object.
+			Call call = (Call)service.createCall(); // Creates a Call Object.
+			call.setTargetEndpointAddress(new URL(SERVER_SERVICE)); // Sets the target of the Call to the MyTDCServer service.
+			call.setOperationName(new QName(method)); // Sets the Call Object to invoke the corresponding method.
+			return call.invoke(args); // Passes the received Object[] arguments, and returns the value from service method the invocation.
+		} catch (Exception ex) {} // Exception caught (probably the method or received args are wrong).
+		return null; // Returns null if an exception was caught.
+	}
+}

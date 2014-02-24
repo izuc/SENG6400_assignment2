@@ -1,0 +1,218 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions targetNamespace="http://localhost:8080/axis/tdc/MyTDCServer.jws" xmlns:apachesoap="http://xml.apache.org/xml-soap" xmlns:impl="http://localhost:8080/axis/tdc/MyTDCServer.jws" xmlns:intf="http://localhost:8080/axis/tdc/MyTDCServer.jws" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:wsdlsoap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+<!--WSDL created by Apache Axis version: 1.4
+Built on Apr 22, 2006 (06:55:48 PDT)-->
+
+   <wsdl:message name="getCallCountRequest">
+
+   </wsdl:message>
+
+   <wsdl:message name="setLocationResponse">
+
+      <wsdl:part name="setLocationReturn" type="xsd:boolean"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="currentOffsetResponse">
+
+      <wsdl:part name="currentOffsetReturn" type="xsd:double"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="differenceRequest">
+
+      <wsdl:part name="first" type="xsd:string"/>
+
+      <wsdl:part name="second" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="listLocationsResponse">
+
+      <wsdl:part name="listLocationsReturn" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="currentOffsetRequest">
+
+      <wsdl:part name="location" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getCallCountResponse">
+
+      <wsdl:part name="getCallCountReturn" type="xsd:int"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="listLocationsRequest">
+
+   </wsdl:message>
+
+   <wsdl:message name="differenceResponse">
+
+      <wsdl:part name="differenceReturn" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="setLocationRequest">
+
+      <wsdl:part name="location" type="xsd:string"/>
+
+      <wsdl:part name="offset" type="xsd:double"/>
+
+      <wsdl:part name="addLocation" type="xsd:boolean"/>
+
+   </wsdl:message>
+
+   <wsdl:portType name="MyTDCServer">
+
+      <wsdl:operation name="currentOffset" parameterOrder="location">
+
+         <wsdl:input message="impl:currentOffsetRequest" name="currentOffsetRequest"/>
+
+         <wsdl:output message="impl:currentOffsetResponse" name="currentOffsetResponse"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="listLocations">
+
+         <wsdl:input message="impl:listLocationsRequest" name="listLocationsRequest"/>
+
+         <wsdl:output message="impl:listLocationsResponse" name="listLocationsResponse"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getCallCount">
+
+         <wsdl:input message="impl:getCallCountRequest" name="getCallCountRequest"/>
+
+         <wsdl:output message="impl:getCallCountResponse" name="getCallCountResponse"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="setLocation" parameterOrder="location offset addLocation">
+
+         <wsdl:input message="impl:setLocationRequest" name="setLocationRequest"/>
+
+         <wsdl:output message="impl:setLocationResponse" name="setLocationResponse"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="difference" parameterOrder="first second">
+
+         <wsdl:input message="impl:differenceRequest" name="differenceRequest"/>
+
+         <wsdl:output message="impl:differenceResponse" name="differenceResponse"/>
+
+      </wsdl:operation>
+
+   </wsdl:portType>
+
+   <wsdl:binding name="MyTDCServerSoapBinding" type="impl:MyTDCServer">
+
+      <wsdlsoap:binding style="rpc" transport="http://schemas.xmlsoap.org/soap/http"/>
+
+      <wsdl:operation name="currentOffset">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="currentOffsetRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://DefaultNamespace" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="currentOffsetResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://localhost:8080/axis/tdc/MyTDCServer.jws" use="encoded"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="listLocations">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="listLocationsRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://DefaultNamespace" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="listLocationsResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://localhost:8080/axis/tdc/MyTDCServer.jws" use="encoded"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getCallCount">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="getCallCountRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://DefaultNamespace" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="getCallCountResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://localhost:8080/axis/tdc/MyTDCServer.jws" use="encoded"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="setLocation">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="setLocationRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://DefaultNamespace" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="setLocationResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://localhost:8080/axis/tdc/MyTDCServer.jws" use="encoded"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="difference">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="differenceRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://DefaultNamespace" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="differenceResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://localhost:8080/axis/tdc/MyTDCServer.jws" use="encoded"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+   </wsdl:binding>
+
+   <wsdl:service name="MyTDCServerService">
+
+      <wsdl:port binding="impl:MyTDCServerSoapBinding" name="MyTDCServer">
+
+         <wsdlsoap:address location="http://localhost:8080/axis/tdc/MyTDCServer.jws"/>
+
+      </wsdl:port>
+
+   </wsdl:service>
+
+</wsdl:definitions>

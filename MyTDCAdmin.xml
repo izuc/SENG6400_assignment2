@@ -1,0 +1,226 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions targetNamespace="http://localhost:8080/axis/tdc/MyTDCAdmin.jws" xmlns:apachesoap="http://xml.apache.org/xml-soap" xmlns:impl="http://localhost:8080/axis/tdc/MyTDCAdmin.jws" xmlns:intf="http://localhost:8080/axis/tdc/MyTDCAdmin.jws" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:wsdlsoap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+<!--WSDL created by Apache Axis version: 1.4
+Built on Apr 22, 2006 (06:55:48 PDT)-->
+
+   <wsdl:message name="callCountRequest">
+
+      <wsdl:part name="sessionID" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="tdcLogoutRequest">
+
+      <wsdl:part name="sessionID" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="setOffsetRequest">
+
+      <wsdl:part name="sessionID" type="xsd:string"/>
+
+      <wsdl:part name="location" type="xsd:string"/>
+
+      <wsdl:part name="offset" type="xsd:double"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="addLocationResponse">
+
+      <wsdl:part name="addLocationReturn" type="xsd:boolean"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="addLocationRequest">
+
+      <wsdl:part name="sessionID" type="xsd:string"/>
+
+      <wsdl:part name="location" type="xsd:string"/>
+
+      <wsdl:part name="offset" type="xsd:double"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="tdcLoginResponse">
+
+      <wsdl:part name="tdcLoginReturn" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="callCountResponse">
+
+      <wsdl:part name="callCountReturn" type="xsd:int"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="tdcLogoutResponse">
+
+      <wsdl:part name="tdcLogoutReturn" type="xsd:boolean"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="tdcLoginRequest">
+
+      <wsdl:part name="user" type="xsd:string"/>
+
+      <wsdl:part name="pwd" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="setOffsetResponse">
+
+      <wsdl:part name="setOffsetReturn" type="xsd:boolean"/>
+
+   </wsdl:message>
+
+   <wsdl:portType name="MyTDCAdmin">
+
+      <wsdl:operation name="setOffset" parameterOrder="sessionID location offset">
+
+         <wsdl:input message="impl:setOffsetRequest" name="setOffsetRequest"/>
+
+         <wsdl:output message="impl:setOffsetResponse" name="setOffsetResponse"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="tdcLogout" parameterOrder="sessionID">
+
+         <wsdl:input message="impl:tdcLogoutRequest" name="tdcLogoutRequest"/>
+
+         <wsdl:output message="impl:tdcLogoutResponse" name="tdcLogoutResponse"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="addLocation" parameterOrder="sessionID location offset">
+
+         <wsdl:input message="impl:addLocationRequest" name="addLocationRequest"/>
+
+         <wsdl:output message="impl:addLocationResponse" name="addLocationResponse"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="tdcLogin" parameterOrder="user pwd">
+
+         <wsdl:input message="impl:tdcLoginRequest" name="tdcLoginRequest"/>
+
+         <wsdl:output message="impl:tdcLoginResponse" name="tdcLoginResponse"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="callCount" parameterOrder="sessionID">
+
+         <wsdl:input message="impl:callCountRequest" name="callCountRequest"/>
+
+         <wsdl:output message="impl:callCountResponse" name="callCountResponse"/>
+
+      </wsdl:operation>
+
+   </wsdl:portType>
+
+   <wsdl:binding name="MyTDCAdminSoapBinding" type="impl:MyTDCAdmin">
+
+      <wsdlsoap:binding style="rpc" transport="http://schemas.xmlsoap.org/soap/http"/>
+
+      <wsdl:operation name="setOffset">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="setOffsetRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://DefaultNamespace" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="setOffsetResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://localhost:8080/axis/tdc/MyTDCAdmin.jws" use="encoded"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="tdcLogout">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="tdcLogoutRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://DefaultNamespace" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="tdcLogoutResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://localhost:8080/axis/tdc/MyTDCAdmin.jws" use="encoded"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="addLocation">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="addLocationRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://DefaultNamespace" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="addLocationResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://localhost:8080/axis/tdc/MyTDCAdmin.jws" use="encoded"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="tdcLogin">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="tdcLoginRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://DefaultNamespace" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="tdcLoginResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://localhost:8080/axis/tdc/MyTDCAdmin.jws" use="encoded"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="callCount">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="callCountRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://DefaultNamespace" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="callCountResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://localhost:8080/axis/tdc/MyTDCAdmin.jws" use="encoded"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+   </wsdl:binding>
+
+   <wsdl:service name="MyTDCAdminService">
+
+      <wsdl:port binding="impl:MyTDCAdminSoapBinding" name="MyTDCAdmin">
+
+         <wsdlsoap:address location="http://localhost:8080/axis/tdc/MyTDCAdmin.jws"/>
+
+      </wsdl:port>
+
+   </wsdl:service>
+
+</wsdl:definitions>

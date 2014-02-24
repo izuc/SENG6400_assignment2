@@ -1,0 +1,96 @@
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+// Student name: Lance Baker 
+// Course: SENG6400 (Network & Distributed Computing)
+// Student number: c3128034
+// Assignment title: SENG6400 Assignment 2 
+// File name: MyTDCServer.jws
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+import java.util.HashMap;
+import java.lang.StringBuilder;
+import java.util.Iterator;
+import java.util.Locale;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
+
+public class MyTDCServer {
+	private static final String SPACE = " ";
+	private static final String EQUALS = " = ";
+	private static final String NEW_LINE = "\n";
+	private static final String ERR = "ERR: ";
+	private static final String ERR_LOCATIONS_DONT_EXIST = ERR + "Locations don't exist";
+
+	private static HashMap<String, Double> locations = new HashMap<String, Double>();
+	private static int callCount;
+
+	public MyTDCServer() {
+		// Add the locations into memory if the size is zero.
+		if (locations.size() == 0) {
+			locations.put("LONDON", 0.00);
+			locations.put("SYDNEY", 10.00);
+			locations.put("AMSTERDAM", 2.00);
+			locations.put("NEWYORK", -5.00);
+			locations.put("SINGAPORE", 8.00);
+		}
+		callCount++; // The service has been invoked; therefore the counter is incremented.
+	}
+	
+	// Returns a double representing the GMT offset for the provided location.
+	public double currentOffset(String location) {
+		if (locations.containsKey(location)) { // Checks whether the requested location exists.
+			return locations.get(location); // Returns the location offset stored in the hashmap.
+		}
+		return -1;  // Returns -1 if the location doesn't exist.
+	}
+	
+	// Returns a String containing the currently supported locations, separated by “\n”.
+	public String listLocations() {
+		// Since strings are immutable objects; the StringBuffer enables a more efficient way to store concatenated values temporarily
+		// without causing too many string objects to be discarded in memory.
+		StringBuilder output = new StringBuilder();
+		Iterator iterator = locations.keySet().iterator(); // Grabs the Iterator of the hashMap keySet.
+		while(iterator.hasNext()) {  // Iterates for each key
+			String key = (String)iterator.next(); // Grabs the key value.
+			// The location offset is grabbed from the hashmap based on the key value.
+			// Appends the formatted output to the StringBuffer - being separated with a new line.
+			output.append(key + SPACE + locations.get(key) + NEW_LINE);
+		}
+		return output.toString();
+	}
+	
+	// Calculates the difference in the GMT offset for two locations. Returns a String depicting the difference in the format of HH:MM.
+	public String difference(String first, String second) {
+		if (locations.containsKey(first) && locations.containsKey(second)) {
+			// Creating a DecimalFormat object that will format with a colon seperation to mimic the HH:MM format.
+			DecimalFormatSymbols otherSymbols = new DecimalFormatSymbols(Locale.ENGLISH);
+			otherSymbols.setDecimalSeparator(':');
+			DecimalFormat df = new DecimalFormat("00.00", otherSymbols);
+			// Substracts the first value from the second, formats the value in the DecimalFormat, and returns the String.
+			return df.format((locations.get(first) - locations.get(second)));
+		} else {
+			return ERR_LOCATIONS_DONT_EXIST; // Error message, location doesn't exist.
+		}
+	}
+	
+	// The setLocation method is a static public method that will enable an outside class to modify the contents of the locations.
+	public static synchronized boolean setLocation(String location, double offset, boolean addLocation) {
+		callCount--; // Deducts one - due to this request not being a service call.
+		// If the received addLocation boolean is true, then the request is to add a new location;
+		// therefore it can only be added if the location does not exist.
+		// Otherwise, if the addLocation is false - then the request is to update the existing location value;
+		// therefore it has to exist in order to be updated.
+		if ((addLocation && (!locations.containsKey(location)))
+			|| ((!addLocation) && (locations.containsKey(location)))) {
+			locations.put(location.toUpperCase(), offset); // Adds a new location, or updates the existing location value.
+			return true; // Indicates the location has been updated.
+		}
+		return false; // The location either exists, or doesn't exist (depending on the criteria mentioned above)
+	}
+	
+	// The getCallCount() method returns the counter request value; which is used to keep a count of the requests made to the service.
+	public static int getCallCount() {
+		callCount--; // Deducts one - due to this request not being a service call.
+		return callCount; // Returns the counter.
+	}
+}
